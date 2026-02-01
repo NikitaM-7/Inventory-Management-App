@@ -1,3 +1,8 @@
+# Flutter generated files
+linux/flutter/generated_*.* 
+windows/flutter/generated_*.* 
+macos/Flutter/GeneratedPluginRegistrant.*
+
 # Miscellaneous
 *.class
 *.log
@@ -31,7 +36,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
-/coverage/
+ /coverage/
 
 # Symbolication related
 app.*.symbols
