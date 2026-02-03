@@ -15,7 +15,16 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # State management and routing
-  get: ^4.9.0
+  get: 4.7.3
+
+  # Local storage
+  shared_preferences: ^2.2.3
+
+  # 📄 PDF generation (Bill / Invoice)
+  pdf: ^3.10.4
+
+  # 📁 File path access (required for PDF save)
+  path_provider: ^2.1.2
 
 dev_dependencies:
   flutter_test:
@@ -27,11 +36,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # Add assets here if needed
   # assets:
   #   - assets/images/
 
-  # Add custom fonts here if needed
   # fonts:
   #   - family: CustomFont
   #     fonts:

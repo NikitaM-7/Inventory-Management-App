@@ -1,55 +1,74 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../routes/app_routes.dart';
+import '../../controllers/sales_controller.dart';
+import '../../models/product_model.dart';
 
-class SplashView extends StatefulWidget {
-  const SplashView({super.key});
+class SalesView extends StatelessWidget {
+  SalesView({super.key});
 
-  @override
-  State<SplashView> createState() => _SplashViewState();
-}
-
-class _SplashViewState extends State<SplashView>
-    with SingleTickerProviderStateMixin {
-  late AnimationController controller;
-
-  @override
-  void initState() {
-    super.initState();
-
-    controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..forward();
-
-    Future.delayed(const Duration(seconds: 3), () {
-      Get.offAllNamed(AppRoutes.login);
-    });
-  }
+  final SalesController controller = Get.find<SalesController>();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: ScaleTransition(
-          scale: Tween(begin: 0.5, end: 1.0).animate(
-            CurvedAnimation(parent: controller, curve: Curves.easeOutBack),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              Icon(Icons.inventory_2, size: 90, color: Colors.deepPurple),
-              SizedBox(height: 12),
-              Text(
-                'Inventory App',
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+    // ✅ SAFE argument read
+    final ProductModel? product = Get.arguments;
+
+    // ❌ Product null असेल तर message दाखव
+    if (product == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Sales')),
+        body: const Center(
+          child: Text(
+            'Please select a product to create bill',
+            style: TextStyle(fontSize: 16),
           ),
         ),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Sales')),
+      body: Obx(() {
+        if (controller.sales.isEmpty) {
+          return const Center(child: Text('No bills generated'));
+        }
+
+        return ListView.builder(
+          itemCount: controller.sales.length,
+          itemBuilder: (context, index) {
+            final bill = controller.sales[index];
+
+            return Card(
+              margin: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 8,
+              ),
+              child: ListTile(
+                title: Text(bill.productName),
+                subtitle: Text(
+                  'Qty: ${bill.quantity} | ₹${bill.price}',
+                ),
+                trailing: Text(
+                  '₹${bill.total.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      }),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          controller.createBill(
+            productId: product.id,
+            productName: product.name,
+            quantity: 1,
+            price: product.price,
+          );
+        },
       ),
     );
   }
